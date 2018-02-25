@@ -10,7 +10,7 @@ Install the plugin; any entries in `acl.auth.php` will now recognise PHP
 Perl-Compatible Regular Expressions when surrounded with slashes:
 
 ```
-:projects:/[0-9]+/:members  @admin  AUTH_EDIT
+:projects:/[0-9]+/:members  @managers  2
 ```
 
 Known Issues
