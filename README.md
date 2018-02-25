@@ -1,7 +1,7 @@
 ACL Regular Expressions
 ========================================================================
 
-Allow ACLs to contain regular expression entries
+Regular expression support for DokuWiki access control lists
 
 Usage
 ------------------------------------------------------------------------

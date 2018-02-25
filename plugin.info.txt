@@ -4,4 +4,4 @@ email   iain@nineworlds.net
 date    2018-02-25
 name    ACL Regular Expressions
 url     https://www.dokuwiki.org/plugin:aclregex
-desc    Allow ACLs to contain regular expression entries
+desc    Regular expression support for DokuWiki access control lists
