@@ -25,7 +25,6 @@ class action_plugin_aclregex extends DokuWiki_Action_Plugin {
    */
   public function register(Doku_Event_Handler $controller) {
     $controller->register_hook('AUTH_ACL_CHECK', 'BEFORE', $this, '_add_acl');
-    $controller->register_hook('AUTH_ACL_CHECK', 'AFTER', $this, '_restore_acl');
   }
 
   /**
@@ -44,26 +43,29 @@ class action_plugin_aclregex extends DokuWiki_Action_Plugin {
    
     global $AUTH_ACL;
     global $USERINFO;
-    $this->ORIG_AUTH_ACL = $AUTH_ACL;
+    $ORIG_AUTH_ACL = $AUTH_ACL;
 
     $add_acl_id = ":admin:add_acl";
     
-    if (!page_exists($add_acl_id)) {
-      return auth_aclcheck_cb($event->$data);
-    }  
-      
-    $add_acl = file(wikiFN($add_acl_id));
-    /* TBD: take care of placeholders */
-    $AUTH_ACL = array_merge($AUTH_ACL, $add_acl);
-
-    return auth_aclcheck_cb($event->$data);
+    if (page_exists($add_acl_id)) {
+      //$add_acl = file(wikiFN($add_acl_id));
+      /* TBD: take care of placeholders */
+      //$AUTH_ACL = array_merge($AUTH_ACL, $add_acl);
+   }
+    
+   $res = auth_aclcheck_cb($event->$data);
+   
+    $AUTH_ACL = $ORIG_AUTH_ACL;
+   
+   return $res;
+   
    }
 
-  public function _restore_acl(Doku_Event $event, $param) {
+ /* public function _restore_acl(Doku_Event $event, $param) {
     global $AUTH_ACL;
 
     $AUTH_ACL = $this->ORIG_AUTH_ACL;
 
     return 0;
-   }
+   } */
 }
