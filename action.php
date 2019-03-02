@@ -11,7 +11,11 @@
 if(!defined('DOKU_INC')) die();
 
 class action_plugin_aclregex extends DokuWiki_Action_Plugin {
-
+ 
+  /** store original $ACL_AUTH  */
+  
+  private $ORIG_ACL_AUTH;
+  
   /**
    * Register handlers with DokuWiki's event system
    * 
@@ -20,7 +24,7 @@ class action_plugin_aclregex extends DokuWiki_Action_Plugin {
    * @return  not required
    */
   public function register(Doku_Event_Handler $controller) {
-    $controller->register_hook('AUTH_ACL_CHECK', 'BEFORE', $this, '_handle_aclregex_check');
+    $controller->register_hook('AUTH_ACL_CHECK', 'BEFORE', $this, '_add_acl');
   }
 
   /**
@@ -311,4 +315,5 @@ class action_plugin_aclregex extends DokuWiki_Action_Plugin {
     }
     return $out;
   }
+
 }
