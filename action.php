@@ -33,7 +33,7 @@ class action_plugin_aclregex extends DokuWiki_Action_Plugin {
    * 
    * @return  int  AUTH_<X>
    */
-  public function _handle_aclregex_check(Doku_Event $event, $param) {
+  public function _handle_aclregex_check(Doku_Event $event, $param) { 
     // Prevent default event to do our own auth check
     $event->preventDefault();
 
