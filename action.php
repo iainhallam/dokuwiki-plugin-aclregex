@@ -53,11 +53,11 @@ class action_plugin_aclregex extends DokuWiki_Action_Plugin {
       //$AUTH_ACL = array_merge($AUTH_ACL, $add_acl);
    }
     
-   $res = auth_aclcheck_cb($event->$data);
+   $event->result = auth_aclcheck_cb($event->$data);
    
     $AUTH_ACL = $ORIG_AUTH_ACL;
    
-   return $res;
+   return $event->result;
    
    }
 
