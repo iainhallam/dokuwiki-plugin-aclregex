@@ -261,6 +261,7 @@ class action_plugin_aclregex extends DokuWiki_Action_Plugin {
   public function _replace_placeholders($acl) { 
     global $INPUT;
     global $USERINFO;
+    global $INFO; 
     
     $out = array();
     foreach($acl as $line) {
