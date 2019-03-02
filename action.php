@@ -54,7 +54,7 @@ class action_plugin_aclregex extends DokuWiki_Action_Plugin {
      $add_ACL_id = ":admin:add_acl";
     
     $auth_ACL = $AUTH_ACL;
-    if (page_exists($add_acl_id)) {
+    if (page_exists($add_ACL_id)) {
       $add_ACL = file(wikiFN($add_ACL_id));
       /* TBD: take care of placeholders */
       $auth_ACL = array_merge($auth_ACL, $add_ACL);
