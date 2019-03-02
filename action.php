@@ -283,7 +283,7 @@ class action_plugin_aclregex extends DokuWiki_Action_Plugin {
         }
 
         // substitute user NAME wildcard 
-        if(strstr($id, '%EMAIL%') || strstr($id, '%EMAIL%')){
+        if(strstr($id, '%EMAIL%') || strstr($id, '%EMAILSHORT%') || strstr($id, '%EMAILNAME%')){
               if (!$INPUT->server->has('REMOTE_USER')) continue;
   
               $email = $INFO['userinfo']['mail'];
