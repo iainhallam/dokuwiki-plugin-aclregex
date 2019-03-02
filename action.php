@@ -25,7 +25,7 @@ class action_plugin_aclregex extends DokuWiki_Action_Plugin {
    */
   public function register(Doku_Event_Handler $controller) {
     $controller->register_hook('AUTH_ACL_CHECK', 'BEFORE', $this, '_add_acl');
-    //$controller->register_hook('AUTH_ACL_CHECK', 'AFTER', $this, '_restore_acl');
+    $controller->register_hook('AUTH_ACL_CHECK', 'AFTER', $this, '_restore_acl');
   }
 
   /**
@@ -49,7 +49,7 @@ class action_plugin_aclregex extends DokuWiki_Action_Plugin {
     $add_acl_id = ":admin:add_acl";
     
     if (!page_exists($add_acl_id)) {
-      return 0; 
+      return auth_aclcheck_cb($event->$data);
     }  
       
     $add_acl = file(wikiFN($add_acl_id));
@@ -59,11 +59,11 @@ class action_plugin_aclregex extends DokuWiki_Action_Plugin {
     return auth_aclcheck_cb($event->$data);
    }
 
-  /* public function _restore_acl(Doku_Event $event, $param) {
+  public function _restore_acl(Doku_Event $event, $param) {
     global $AUTH_ACL;
 
     $AUTH_ACL = $this->ORIG_AUTH_ACL;
 
     return 0;
-   }*/
+   }
 }
