@@ -39,6 +39,9 @@ class action_plugin_aclregex extends DokuWiki_Action_Plugin {
    * @return  int  AUTH_<X>
    */
   public function _add_acl(Doku_Event $event, $param) {
+    // Prevent default event to do our own auth check
+    $event->preventDefault();
+   
     global $AUTH_ACL;
     global $USERINFO;
     $this->ORIG_AUTH_ACL = $AUTH_ACL;
@@ -53,7 +56,7 @@ class action_plugin_aclregex extends DokuWiki_Action_Plugin {
     /* TBD: take care of placeholders */
     $AUTH_ACL = array_merge($AUTH_ACL, $add_acl);
 
-    return 0;
+    return auth_aclcheck_cb($event->$data);
    }
 
   /* public function _restore_acl(Doku_Event $event, $param) {
