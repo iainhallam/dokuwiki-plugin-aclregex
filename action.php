@@ -261,7 +261,6 @@ class action_plugin_aclregex extends DokuWiki_Action_Plugin {
   public function _replace_placeholders($acl) { 
     global $INPUT;
     global $USERINFO;
-    global $INFO; 
     
     $out = array();
     foreach($acl as $line) {
@@ -286,7 +285,7 @@ class action_plugin_aclregex extends DokuWiki_Action_Plugin {
         if(strstr($id, '%EMAIL%') || strstr($id, '%EMAILSHORT%') || strstr($id, '%EMAILNAME%')){
               if (!$INPUT->server->has('REMOTE_USER')) continue;
   
-              $email = $INFO['userinfo']['mail'];
+              $email = $USERINFO['mail'];
               $email_parts = preg_split("/@/", $email);
               $email_short = $email_parts[0];
               if (preg_match('/student/', $email_parts[1])) {
