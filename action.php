@@ -275,12 +275,28 @@ class action_plugin_aclregex extends DokuWiki_Action_Plugin {
             $rest = str_replace('%USER%',auth_nameencode($INPUT->server->str('REMOTE_USER')),$rest);
         }
         // substitute user NAME wildcard 
-        if(strstr($line, '%NAME%')){
+        if(strstr($id, '%NAME%')){
             // if user is not logged in, this ACL line is meaningless - skip it
             if (!$INPUT->server->has('REMOTE_USER')) continue;
             $id   = str_replace('%NAME%',cleanID($USERINFO['name']),$id);
         }
-        
+
+        // substitute user NAME wildcard 
+        if(strstr($id, '%EMAIL%') || strstr($id, '%EMAIL%')){
+              if (!$INPUT->server->has('REMOTE_USER')) continue;
+  
+              $email = $INFO['userinfo']['mail'];
+              $email_parts = preg_split("/@/", $email);
+              $email_short = $email_parts[0];
+              if (preg_match('/student/', $email_parts[1])) {
+                  $email_short = $email_short.'_student';
+              }
+          
+              $id   = str_replace('%EMAIL%',cleanID($email),$id);
+              $id   = str_replace('%EMAILSHORT%',cleanID($email_short),$id);
+              $id   = str_replace('%EMAILNAME%',cleanID($email_parts[0]),$id);
+        }
+
         // substitute group wildcard (its 1:m)
         if(strstr($line, '%GROUP%')){
             // if user is not logged in, grps is empty, no output will be added (i.e. skipped)
