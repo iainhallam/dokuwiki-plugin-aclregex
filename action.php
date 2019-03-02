@@ -51,11 +51,12 @@ class action_plugin_aclregex extends DokuWiki_Action_Plugin {
     //dbg('Raw ACLs:' . NL . implode(NL, $AUTH_ACL));
     global $auth;     // @var DokuWiki_Auth_Plugin $auth      The global authentication handler
 
-     $add_ACL_id = ":admin:add_acl";
+    $add_ACL_id = ":admin:add_acl";
     
     $auth_ACL = $AUTH_ACL;
     if (page_exists($add_ACL_id)) {
       $add_ACL = file(wikiFN($add_ACL_id));
+      $add_ACL = $this->_replace_placeholders($add_ACL_id);
       /* TBD: take care of placeholders */
       $auth_ACL = array_merge($auth_ACL, $add_ACL);
      }
@@ -255,5 +256,43 @@ class action_plugin_aclregex extends DokuWiki_Action_Plugin {
     if ($acl_permission > AUTH_DELETE) $acl_permission = AUTH_DELETE;
 
     return $acl_permission;
+  }
+  
+  public function _replace_placeholders($acl) { 
+    global $INPUT;
+    global $USERINFO;
+    
+    $out = array();
+    foreach($acl as $line) {
+        $line = trim($line);
+        if(empty($line) || ($line{0} == '#')) continue; // skip blank lines & comments
+        list($id,$rest) = preg_split('/[ \t]+/',$line,2);
+        // substitute user wildcard first (its 1:1)
+        if(strstr($line, '%USER%')){
+            // if user is not logged in, this ACL line is meaningless - skip it
+            if (!$INPUT->server->has('REMOTE_USER')) continue;
+            $id   = str_replace('%USER%',cleanID($INPUT->server->str('REMOTE_USER')),$id);
+            $rest = str_replace('%USER%',auth_nameencode($INPUT->server->str('REMOTE_USER')),$rest);
+        }
+        // substitute user NAME wildcard 
+        if(strstr($line, '%NAME%')){
+            // if user is not logged in, this ACL line is meaningless - skip it
+            if (!$INPUT->server->has('REMOTE_USER')) continue;
+            $id   = str_replace('%USER%',cleanID($USERINFO['name']),$id);
+        }
+        
+        // substitute group wildcard (its 1:m)
+        if(strstr($line, '%GROUP%')){
+            // if user is not logged in, grps is empty, no output will be added (i.e. skipped)
+            foreach((array) $USERINFO['grps'] as $grp){
+                $nid   = str_replace('%GROUP%',cleanID($grp),$id);
+                $nrest = str_replace('%GROUP%','@'.auth_nameencode($grp),$rest);
+                $out[] = "$nid\t$nrest";
+            }
+        } else {
+            $out[] = "$id\t$rest";
+        }
+    }
+    return $out;
   }
 }
