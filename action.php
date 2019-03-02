@@ -25,7 +25,7 @@ class action_plugin_aclregex extends DokuWiki_Action_Plugin {
    */
   public function register(Doku_Event_Handler $controller) {
     $controller->register_hook('AUTH_ACL_CHECK', 'BEFORE', $this, '_add_acl');
-    $controller->register_hook('AUTH_ACL_CHECK', 'AFTER', $this, '_restore_acl');
+    //$controller->register_hook('AUTH_ACL_CHECK', 'AFTER', $this, '_restore_acl');
   }
 
   /**
