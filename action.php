@@ -56,11 +56,11 @@ class action_plugin_aclregex extends DokuWiki_Action_Plugin {
     return 0;
    }
 
-  public function _restore_acl(Doku_Event $event, $param) {
+  /* public function _restore_acl(Doku_Event $event, $param) {
     global $AUTH_ACL;
 
     $AUTH_ACL = $this->ORIG_AUTH_ACL;
 
     return 0;
-   }
+   }*/
 }
