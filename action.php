@@ -51,6 +51,15 @@ class action_plugin_aclregex extends DokuWiki_Action_Plugin {
     //dbg('Raw ACLs:' . NL . implode(NL, $AUTH_ACL));
     global $auth;     // @var DokuWiki_Auth_Plugin $auth      The global authentication handler
 
+     $add_ACL_id = ":admin:add_acl";
+    
+    $auth_ACL = $AUTH_ACL;
+    if (page_exists($add_acl_id)) {
+      $add_ACL = file(wikiFN($add_ACL_id));
+      /* TBD: take care of placeholders */
+      $auth_ACL = array_merge($auth_ACL, $add_ACL);
+     }
+    
     // If no ACL is used always return upload rights
     if (! $conf['useacl']) {
       //dbg('Not configured for ACLs');
@@ -66,7 +75,7 @@ class action_plugin_aclregex extends DokuWiki_Action_Plugin {
     }
 
     // If no ACLs exist return no rights
-    if (! count($AUTH_ACL)) {
+    if (! count($auth_ACL)) {
       msg('No ACL setup yet! Denying access to everyone.');
       $event->result = AUTH_NONE;
       return AUTH_NONE;
@@ -107,7 +116,7 @@ class action_plugin_aclregex extends DokuWiki_Action_Plugin {
 
     // Build ACL parts structure
     $acl_parts_list = array();
-    foreach ($AUTH_ACL as $acl) {
+    foreach ($auth_ACL as $acl) {
       // Ignore comments
       $acl = preg_replace('/#.*$/', '', $acl);
       //dbg('Processing ACL: ' . $acl);
