@@ -67,7 +67,7 @@ class action_plugin_aclregex extends DokuWiki_Action_Plugin {
     // temporarily set global $AUTH_ACL to new value, then call auth_aclcheck_cb, then set to original
     $orig_auth_ACL = $AUTH_ACL;
     $AUTH_ACL = $auth_ACL;
-    $perm = auth_aclcheck_cb
+    $perm = auth_aclcheck_cb($event->data);
     $AUTH_ACL = $orig_auth_ACL;  
     
     return $perm;
