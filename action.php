@@ -51,7 +51,7 @@ class action_plugin_aclregex extends DokuWiki_Action_Plugin {
     //dbg('Raw ACLs:' . NL . implode(NL, $AUTH_ACL));
     global $auth;     // @var DokuWiki_Auth_Plugin $auth      The global authentication handler
 
-    $add_ACL_id = $this->getConf('add_acl_page');;
+    $add_ACL_id = $this->getConf('add_acl_page');
     
     $auth_ACL = $AUTH_ACL;
     if (page_exists($add_ACL_id)) {
