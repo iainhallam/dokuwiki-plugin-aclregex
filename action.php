@@ -59,9 +59,9 @@ class action_plugin_aclregex extends DokuWiki_Action_Plugin {
     $auth_ACL = $AUTH_ACL;
     if (page_exists($add_ACL_id)) {
       $add_ACL = file(wikiFN($add_ACL_id));
-      $add_ACL = $this->_replace_placeholders($add_ACL);
-      /* TBD: take care of placeholders */
       $auth_ACL = array_merge($auth_ACL, $add_ACL);
+      $add_ACL = $this->_replace_placeholders($add_ACL);
+      /* TBD: consider also handling regex */
      }
     
     // temporarily set global $AUTH_ACL to new value, then call auth_aclcheck_cb, then set to original
@@ -83,6 +83,7 @@ class action_plugin_aclregex extends DokuWiki_Action_Plugin {
         $line = trim($line);
         if(empty($line) || ($line{0} == '#')) continue; // skip blank lines & comments
         list($id,$rest) = preg_split('/[ \t]+/',$line,2);
+         
         // substitute user wildcard first (its 1:1)
         if(strstr($line, '%USER%')){
             // if user is not logged in, this ACL line is meaningless - skip it
