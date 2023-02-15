@@ -1,0 +1,29 @@
+<?xml version="1.0"?>
+<!-- Source: https://github.com/splitbrain/dokuwiki/blob/release_stable_2020-07-29/_test/phpcs.xml -->
+<ruleset name="DokuWiki Coding Standard Standard" namespace="DokuWiki\CS\Standard">
+    <description>Coding Standard used for DokuWiki</description>
+
+    <!-- default config -->
+    <arg name="colors"/>
+    <arg value="sp"/>
+    <arg name="extensions" value="php"/>
+
+    <ini name="memory_limit" value="-1"/>
+
+    <!-- where to look -->
+    <file>action.php</file>
+
+    <!-- rules on top of PSR-12 -->
+    <rule ref="PSR12">
+        <!-- This rule breaks the single line guard pattern that we prefer to keep using -->
+        <exclude name="Generic.ControlStructures.InlineControlStructure.NotAllowed"/>
+
+        <!-- we have lots of legacy classes without name spaces -->
+        <exclude name="PSR1.Classes.ClassDeclaration.MissingNamespace"/>
+    </rule>
+
+    <!-- disable some rules for certain paths, for legacy support -->
+    <rule ref="Squiz.Classes.ValidClassName.NotCamelCaps">
+        <exclude-pattern>action*</exclude-pattern>
+    </rule>
+</ruleset>
