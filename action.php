@@ -148,10 +148,16 @@ class action_plugin_aclregex extends DokuWiki_Action_Plugin
 
         // Check for exact object matches
         foreach ($acl_parts_list as $acl_parts) {
-            if (preg_match($acl_parts['object'], $id)) {
+            $matches = array();  // Empty the matches array
+            if (preg_match($acl_parts['object'], $id, $matches)) {
                 //dbg('Matched ID ' . $id . ' with search string ' . $acl_parts['object']);
 
-                $line_permission = $this->checkPermission($groups, $acl_parts['subject'], $acl_parts['permission']);
+                $line_permission = $this->checkPermission(
+                    $groups,
+                    $acl_parts['subject'],
+                    $matches,
+                    $acl_parts['permission']
+                );
                 //dbg('Line permission returned: ' . $line_permission);
 
                 // The highest permission found is what gets returned
@@ -183,10 +189,16 @@ class action_plugin_aclregex extends DokuWiki_Action_Plugin
         // Loop to work our way up the tree if there's no match first time round
         do {
             foreach ($acl_parts_list as $acl_parts) {
+                $matches = array();  // Empty the matches array
                 if (preg_match($acl_parts['object'], $path)) {
                     //dbg('Matched namespace path ' . $path . ' with search string ' . $acl_parts['object']);
 
-                    $line_permission = $this->checkPermission($groups, $acl_parts['subject'], $acl_parts['permission']);
+                    $line_permission = $this->checkPermission(
+                        $groups,
+                        $acl_parts['subject'],
+                        $matches,
+                        $acl_parts['permission']
+                    );
                     //dbg('Line permission returned: ' . $line_permission);
 
                     // The highest permission found is what gets returned
@@ -228,11 +240,12 @@ class action_plugin_aclregex extends DokuWiki_Action_Plugin
     /**
      * Check the resulting permission for user's groups and username
      *
-     * @param  string[]              $groups          A list of groups (including the username) to check
-     * @param  string                $acl_subject     The subject (user or group) assigned in the ACL
-     * @param  int                   $acl_permission  The permission assigned in the ACL
+     * @param  string[]  $groups          A list of groups (including the username) to check
+     * @param  string    $acl_subject     The subject (user or group) assigned in the ACL
+     * @param  string[]  $matches         The pattern matches from the ID match
+     * @param  int       $acl_permission  The permission assigned in the ACL
      */
-    private function checkPermission($groups, $acl_subject, $acl_permission)
+    private function checkPermission($groups, $acl_subject, $matches, $acl_permission)
     {
         // Access global variables
         global $auth;     // @var DokuWiki_Auth_Plugin $auth      The global authentication handler
@@ -245,6 +258,16 @@ class action_plugin_aclregex extends DokuWiki_Action_Plugin
         if (! $auth->isCaseSensitive() && $acl_subject !== '@ALL') {
             $acl_subject = utf8_strtolower($acl_subject);
         }
+
+        // Replace any placeholders in the subject with parenthesised matches
+        $acl_subject = preg_replace_callback(
+            '/%24%7b\d+%7d/',  // = '${' [0-9]+ '}'
+            function ($pattern) use ($matches) {
+                $pattern_index = substr($pattern[0], 1, -1);
+                return $matches[$pattern_index];
+            },
+            $acl_subject,
+        );
 
         // If $acl_subject doesn't contain one of the user's groups or their user name, move on
         // This would be where to change the plugin to support regexes in subjects
