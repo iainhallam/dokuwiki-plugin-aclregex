@@ -261,7 +261,7 @@ class action_plugin_aclregex extends DokuWiki_Action_Plugin
 
         // Replace any placeholders in the subject with parenthesised matches
         $acl_subject = preg_replace_callback(
-            '/%25\d+%25/',  // %25 = ASCII 37, or '%'
+            '/%24%7b\d+%7d/',  // = '${' [0-9]+ '}'
             function ($pattern) use ($matches) {
                 $pattern_index = substr($pattern[0], 1, -1);
                 return $matches[$pattern_index];
